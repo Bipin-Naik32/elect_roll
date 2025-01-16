@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add Voter Record</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Section 1 -->
+        <div class="row" >
+            <div class="col-md-6" style="border: 1px solid #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="voter_id" class="form-label">Voter ID</label>
+                    <input
+                        type="text"
+                        id="voter_id"
+                        name="voter_id"
+                        class="form-control"
+                        placeholder="Enter Voter ID"
+                        autocomplete="off"
+                        oninput="fetchSuggestions(this.value)"
+                    >
+                    <div id="suggestions" class="dropdown-menu"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="part_no" class="form-label">Part No.</label>
+                    <input type="text" id="part_no" name="part_no" class="form-control" placeholder="Enter Part Number">
+                </div>
+                <div class="mb-3">
+                    <label for="sec_no" class="form-label">Section Number</label>
+                    <input type="text" id="sec_no" name="sec_no" class="form-control" placeholder="Enter Section Number">
+                </div>
+            </div>
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="sec_name" class="form-label">Section Name</label>
+                    <input type="text" id="sec_name" name="sec_name" class="form-control" placeholder="Enter Section Name">
+                </div>
+                <div class="mb-3">
+                    <label for="ps_name" class="form-label">Polling Station Name</label>
+                    <input type="text" id="ps_name" name="ps_name" class="form-control" placeholder="Enter Polling Station Name">
+                </div>
+                <div class="mb-3">
+                    <label for="sr_no" class="form-label">Serial Number</label>
+                    <input type="text" id="sr_no" name="sr_no" class="form-control" placeholder="Enter Serial Number">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="row" >
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Enter Name">
+                </div>
+                <div class="mb-3">
+                    <label for="rel_name" class="form-label">Relative Name</label>
+                    <input type="text" id="rel_name" name="rel_name" class="form-control" placeholder="Enter Relative Name">
+                </div>
+                <div class="mb-3">
+                    <label for="rel_type" class="form-label">Relative Type</label>
+                    <input type="text" id="rel_type" name="rel_type" class="form-control" placeholder="Enter Relative Type">
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea id="address" name="address" class="form-control" placeholder="Enter Address"></textarea>
+                </div>
+            </div>
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth</label>
+                    <input type="text" id="date_of_birth" name="date_of_birth" class="form-control" placeholder="Enter Date of Birth">
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" id="age" name="age" class="form-control" placeholder="Enter Age">
+                </div>
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <select id="gender" name="gender" class="form-control">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="mob_no" class="form-label">Mobile No</label>
+                    <input type="text" id="mob_no" name="mob_no" class="form-control" placeholder="Enter Mobile No">
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+function fetchSuggestions(query) {
+    if (query.length < 2) {
+        document.getElementById("suggestions").innerHTML = "";
+        document.getElementById("suggestions").style.display = "none";
+        return;
+    }
+    fetch(`/suggest-voter-id/?q=${query}`)
+        .then(response => response.json())
+        .then(data => {
+            const suggestions = data.suggestions;
+            const suggestionsDiv = document.getElementById("suggestions");
+            suggestionsDiv.innerHTML = ""; // Clear existing suggestions
+
+            if (suggestions.length === 0) {
+                suggestionsDiv.style.display = "none"; // Hide dropdown if no suggestions
+                return;
+            }
+
+            suggestionsDiv.style.display = "block"; // Show dropdown
+            suggestions.forEach(voterId => {
+                const option = document.createElement("div");
+                option.className = "dropdown-item";
+                option.textContent = voterId;
+                option.onclick = () => {
+                    document.getElementById("voter_id").value = voterId; // Set selected value
+                    suggestionsDiv.innerHTML = ""; // Clear suggestions
+                    suggestionsDiv.style.display = "none";
+                };
+                suggestionsDiv.appendChild(option);
+            });
+        })
+        .catch(error => console.error("Error fetching suggestions:", error));
+}
+</script>
+
+<style>
+#suggestions {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    z-index: 1000;
+    width: calc(100% - 2px);
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 0;
+    margin-top: 2px;
+}
+
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.suggestion-item:hover {
+    background-color: #007bff;
+    color: white;
+}
+</style>
+{% endblock %}
