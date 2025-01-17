@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-xs2-@uaoj66ai%t%w70uz8&vwyx#^64(dpp9tz+z%2pu&pq!93
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -86,10 +86,10 @@ DATABASES = {
    # }
    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'electoral_roll',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',  # Set to the database server's IP if remote
+        'NAME': 'electoral-roll',
+        'USER': 'admin1',
+        'PASSWORD': 'election2027',
+        'HOST': 'electoral-roll.c10uyusyk2hp.us-east-1.rds.amazonaws.com',  # Set to the database server's IP if remote
         'PORT': '5432',       # Default PostgreSQL port
     }
 }
