@@ -84,7 +84,7 @@ DATABASES = {
    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'electoral_roll',
-        'USER': 'admin',
+        'USER': 'super',
         'PASSWORD': 'admin',
         'HOST': 'localhost',  # Set to the database server's IP if remote
         'PORT': '5432',       # Default PostgreSQL port
