@@ -12,12 +12,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
 
 
 # Quick-start development settings - unsuitable for production
@@ -29,7 +26,7 @@ SECRET_KEY = 'django-insecure-xs2-@uaoj66ai%t%w70uz8&vwyx#^64(dpp9tz+z%2pu&pq!93
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['3.80.114.222']
 
 
 # Application definition
@@ -86,10 +83,10 @@ DATABASES = {
    # }
    'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'electoral-roll',
-        'USER': 'admin1',
-        'PASSWORD': 'election2027',
-        'HOST': 'electoral-roll.c10uyusyk2hp.us-east-1.rds.amazonaws.com',  # Set to the database server's IP if remote
+        'NAME': 'electoral_roll',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',  # Set to the database server's IP if remote
         'PORT': '5432',       # Default PostgreSQL port
     }
 }
