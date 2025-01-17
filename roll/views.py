@@ -126,6 +126,44 @@ def suggest_voter_id(request):
     return JsonResponse({'suggestions': list(suggestions)})
     
 @login_required
+
+def send_sms(request):
+    # Twilio configuration (replace with your credentials)
+    #TWILIO_ACCOUNT_SID = 'AC2f1d41c75075e8f288c7262385ec394f'
+    #TWILIO_AUTH_TOKEN = '5d36c687b5cb82796e1cb52dac8726e7'
+    #TWILIO_PHONE_NUMBER = '+17854533228'  # Replace with your Twilio phone number
+
+    # Retrieve filtered record IDs from the query parameters
+    record_ids = request.GET.getlist('ids')
+
+    # Fetch the filtered records
+    records = VoterRecord.objects.filter(id__in=record_ids)
+
+    '''if request.method == "POST":
+        # Get the custom message from the form
+        custom_message = request.POST.get('custom_message', '')
+
+        # Send SMS to each record
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        for record in records:
+            if record.mob_no:  # Ensure the record has a mobile number
+                try:
+                    formatted_number = format_phone_number_to_e164(record.mob_no)
+                    message = client.messages.create(
+                        body=f"Hello {record.name}, {custom_message}",
+                        from_=TWILIO_PHONE_NUMBER,
+                        to=formatted_number
+                    )
+                    print(f"SMS sent to {record.name}: {message.sid}")
+                except Exception as e:
+                    print(f"Failed to send SMS to {record.name}: {e}")
+
+        return redirect('dashboard')'''
+
+    return render(request, 'send_sms.html', {'records': records})
+
+
+@login_required
 def search_records(request):
     #query = request.GET.get('query')
     name = request.GET.get('name')
@@ -159,8 +197,7 @@ def search_records(request):
     if sec_name:
         records = records.filter(sec_name__icontains=sec_name)
 
-    print("Filtered records query:", records.query)
-    print("Filtered records count:", records.count())
+    
 
     if not any([name, age, part_no, voter_id,rel_name,address, mob_no,gender,sec_name]):
         records = VoterRecord.objects.none()
