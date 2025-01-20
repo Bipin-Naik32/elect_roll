@@ -10,4 +10,5 @@ urlpatterns = [
     path('send-sms/', views.send_sms, name='send_sms'),
     path('return-to-dashboard/', views.return_to_dashboard, name='return_to_dashboard'),
     path('suggest-voter-id/', views.suggest_voter_id, name='suggest_voter_id'),
+    path('edit-record/<int:record_id>/', views.edit_record, name='edit_record'),
 ]

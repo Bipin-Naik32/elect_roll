@@ -20,8 +20,12 @@
                 <input type="text" id="part_no" name="part_no" class="form-control" placeholder="Search by part number">
             </div>
             <div class="col-md-4">
-                <label for="sec_name" class="form-label">Sectiion Name</label>
+                <label for="sec_name" class="form-label">Section Name</label>
                 <input type="text" id="sec_name" name="sec_name" class="form-control" placeholder="Search by section name">
+            </div>
+            <div class="col-md-4">
+                <label for="village" class="form-label">Village Name</label>
+                <input type="text" id="village" name="village" class="form-control" placeholder="Search by village name">
             </div>
             <div class="col-md-4">
                 <label for="relative" class="form-label">Relative Name</label>
@@ -42,6 +46,14 @@
             <div class="col-md-4">
                 <label for="gender" class="form-label">Gender</label>
                 <input type="text" id="gender" name="gender" class="form-control" placeholder="Search by gender">
+            </div>
+            <div class="col-md-4">
+                <label for="religion" class="form-label">Religion</label>
+                <input type="text" id="religion" name="religion" class="form-control" placeholder="Search by religion">
+            </div>
+            <div class="col-md-4">
+                <label for="caste" class="form-label">Caste</label>
+                <input type="text" id="caste" name="caste" class="form-control" placeholder="Search by caste">
             </div>
             <div class="col-md-12 text-end">
                 <button type="submit" class="btn btn-primary">Search</button>
@@ -66,6 +78,7 @@
                         <th>Voter ID</th>
                         <th>Address</th>
                         <th>Part No.</th>
+                        <th>Action </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,6 +91,9 @@
                         <td>{{ record.voter_id }}</td>
                         <td>{{ record.address }}</td>
                         <td>{{ record.part_no }}</td>
+                        <td>
+                            <a href="{% url 'edit_record' record.id %}" class="btn btn-primary btn-sm">Edit</a>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

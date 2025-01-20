@@ -68,6 +68,9 @@ def add_record(request):
         rel_type = request.POST.get('rel_type', '').strip()
         ps_name = request.POST.get('ps_name', '').strip()
         sec_name = request.POST.get('sec_name', '').strip()
+        village = request.POST.get('village', '').strip()
+        religion = request.POST.get('religion', '').strip()
+        caste = request.POST.get('caste', '').strip()
 
         # Validate the fields (basic server-side validation)
         if not all([name, rel_name, age, voter_id, address, mob_no, gender]):
@@ -107,6 +110,9 @@ def add_record(request):
                 rel_name=rel_name,
                 rel_type=rel_type,
                 mob_no=mob_no,
+                village=village,
+                religion=religion,
+                caste=caste,
             )
             messages.success(request, 'Voter record added successfully!')
             return redirect('dashboard')
@@ -175,6 +181,9 @@ def search_records(request):
     mob_no = request.GET.get('mob_no')
     gender = request.GET.get('gender')
     sec_name= request.GET.get('sec_name')
+    village= request.Get.get('village')
+    religion= request.Get.get('religion')
+    caste = request.Get.get('caste')
     records = VoterRecord.objects.all()
     
    
@@ -196,10 +205,17 @@ def search_records(request):
         records = records.filter(gender=gender)
     if sec_name:
         records = records.filter(sec_name__icontains=sec_name)
+    if village:
+        records = records.filter(village__icontains=village)
+    if religion:
+        records = records.filter(religion__icontains=religion)
+    if caste:
+        records = records.filter(caste__icontains=caste)
 
-    
+    print("Filtered records query:", records.query)
+    print("Filtered records count:", records.count())
 
-    if not any([name, age, part_no, voter_id,rel_name,address, mob_no,gender,sec_name]):
+    if not any([name, age, part_no, voter_id,rel_name,address, mob_no,gender,sec_name,village,religion,caste]):
         records = VoterRecord.objects.none()
 
     # Set up pagination
@@ -241,6 +257,34 @@ def search_records(request):
         return response
 
     return render(request, 'search_records.html', {'page_obj': page_obj})
+
+@login_required
+def edit_record(request, record_id):
+    # Get the record or return a 404 if not found
+    record = get_object_or_404(VoterRecord, id=record_id)
+
+    if request.method == 'POST':
+        # Manually get the data from the POST request
+        record.name = request.POST.get('name', record.name).strip()
+        record.rel_name = request.POST.get('rel_name', record.rel_name).strip()
+        record.age = request.POST.get('age', record.age)
+        record.mob_no = request.POST.get('mob_no', record.mob_no).strip()
+        record.voter_id = request.POST.get('voter_id', record.voter_id).strip()
+        record.part_no = request.POST.get('part_no', record.part_no).strip()
+        record.address = request.POST.get('address', record.address).strip()
+        record.gender = request.POST.get('gender', record.gender).strip()
+
+        # Validate and save the record
+        try:
+            record.age = int(record.age)
+            record.save()
+            messages.success(request, 'Record updated successfully!')
+            return redirect('search_records')  # Redirect to the search page
+        except ValueError:
+            messages.error(request, 'Invalid input. Please ensure age is a number.')
+
+    return render(request, 'edit_record.html', {'record': record})
+
 
 @login_required
 def return_to_dashboard(request):

@@ -18,6 +18,10 @@ class VoterRecord(models.Model):
     rel_name = models.TextField()
     rel_type = models.TextField()
     mob_no = models.CharField(max_length=15, null=True, blank=True)
+    village = models.CharField(max_length=15, null=True, blank=True)
+    religion = models.CharField(max_length=15, null=True, blank=True)
+    caste = models.CharField(max_length=15, null=True, blank=True)
+
 
     def __str__(self):
         return self.name
