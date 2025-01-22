@@ -181,9 +181,9 @@ def search_records(request):
     mob_no = request.GET.get('mob_no')
     gender = request.GET.get('gender')
     sec_name= request.GET.get('sec_name')
-    village= request.Get.get('village')
-    religion= request.Get.get('religion')
-    caste = request.Get.get('caste')
+    village= request.GET.get('village')
+    religion= request.GET.get('religion')
+    caste = request.GET.get('caste')
     records = VoterRecord.objects.all()
     
    
