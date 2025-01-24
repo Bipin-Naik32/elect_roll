@@ -5,41 +5,96 @@
     <h2>Edit Record</h2>
     <form method="post">
         {% csrf_token %}
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ record.name }}" required>
+        <div class="row" >
+            <div class="col-md-6" style="border: 1px solid #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="voter_id" class="form-label">Voter ID</label>
+                    <input
+                        type="text"
+                        id="voter_id"
+                        name="voter_id"
+                        class="form-control"
+                        value="{{ record.voter_id }}"
+                        readonly
+                    >
+                  
+                </div>
+                <div class="mb-3">
+                    <label for="part_no" class="form-label">Part No.</label>
+                    <input type="text" id="part_no" name="part_no" class="form-control" value="{{ record.part_no }}"
+                    {% if field_uneditable %} readonly {% endif %}>
+                </div>
+                <div class="mb-3">
+                    <label for="village" class="form-label">Village</label>
+                    <input type="text" id="village" name="village" class="form-control" value="{{ record.village }}">
+                </div>
+                <div class="mb-3">
+                    <label for="sec_no" class="form-label">Section Number</label>
+                    <input type="text" id="sec_no" name="sec_no" class="form-control" value="{{ record.sec_no }}">
+                </div>
+            </div>
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="sec_name" class="form-label">Section Name</label>
+                    <input type="text" id="sec_name" name="sec_name" class="form-control" value="{{ record.sec_name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="ps_name" class="form-label">Polling Station Name</label>
+                    <input type="text" id="ps_name" name="ps_name" class="form-control" value="{{ record.ps_name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="sr_no" class="form-label">Serial Number</label>
+                    <input type="text" id="sr_no" name="sr_no" class="form-control" value="{{ record.sr_no }}">
+                </div>
+            </div>
         </div>
-        <div class="mb-3">
-            <label for="rel_name" class="form-label">Relative Name</label>
-            <input type="text" class="form-control" id="rel_name" name="rel_name" value="{{ record.rel_name }}">
-        </div>
-        <div class="mb-3">
-            <label for="age" class="form-label">Age</label>
-            <input type="number" class="form-control" id="age" name="age" value="{{ record.age }}" min="18" max="120" required>
-        </div>
-        <div class="mb-3">
-            <label for="mob_no" class="form-label">Mobile Number</label>
-            <input type="text" class="form-control" id="mob_no" name="mob_no" value="{{ record.mob_no }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="voter_id" class="form-label">Voter ID</label>
-            <input type="text" class="form-control" id="voter_id" name="voter_id" value="{{ record.voter_id }}" required>
-        </div>
-        <div class="mb-3">
-            <label for="part_no" class="form-label">Part No</label>
-            <input type="text" class="form-control" id="part_no" name="part_no" value="{{ record.part_no }}">
-        </div>
-        <div class="mb-3">
-            <label for="address" class="form-label">Address</label>
-            <textarea class="form-control" id="address" name="address">{{ record.address }}</textarea>
-        </div>
-        <div class="mb-3">
-            <label for="gender" class="form-label">Gender</label>
-            <select class="form-select" id="gender" name="gender" required>
-                <option value="Male" {% if record.gender == "Male" %}selected{% endif %}>Male</option>
-                <option value="Female" {% if record.gender == "Female" %}selected{% endif %}>Female</option>
-                <option value="Other" {% if record.gender == "Other" %}selected{% endif %}>Other</option>
-            </select>
+
+        <!-- Section 2 -->
+        <div class="row" >
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ record.name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="rel_name" class="form-label">Relative Name</label>
+                    <input type="text" id="rel_name" name="rel_name" class="form-control" value="{{ record.rel_name }}">
+                </div>
+                <div class="mb-3">
+                    <label for="rel_type" class="form-label">Relative Type</label>
+                    <input type="text" id="rel_type" name="rel_type" class="form-control" value="{{ record.rel_type }}">
+                </div>
+                <div class="mb-3">
+                    <label for="religion" class="form-label">Religion</label>
+                    <input type="text" id="religion" name="religion" class="form-control" value="{{ record.religion }}">
+                </div>
+                <div class="mb-3">
+                    <label for="caste" class="form-label">Caste</label>
+                    <input type="text" id="caste" name="caste" class="form-control" value="{{ record.caste }}">
+                </div>
+            </div>
+            <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
+                <div class="mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth</label>
+                    <input type="text" id="date_of_birth" name="date_of_birth" class="form-control" value="{{ record.date_of_birth }}">
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+                    <input type="number" id="age" name="age" class="form-control" value="{{ record.age }}">
+                </div>
+                <div class="mb-3">
+                    <label for="gender" class="form-label">Gender</label>
+                    <input type="text" id="gender" name="gender" class="form-control" value="{{ record.gender }}">
+                </div>
+                <div class="mb-3">
+                    <label for="mob_no" class="form-label">Mobile No</label>
+                    <input type="text" id="mob_no" name="mob_no" class="form-control" value="{{ record.mob_no }}">
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea id="address" name="address" class="form-control" value="{{ record.address }}"></textarea>
+                </div>
+            </div>
         </div>
         <button type="submit" class="btn btn-success">Save Changes</button>
         <a href="{% url 'search_records' %}" class="btn btn-secondary">Cancel</a>
