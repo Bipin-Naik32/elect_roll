@@ -273,6 +273,15 @@ def edit_record(request, record_id):
         record.part_no = request.POST.get('part_no', record.part_no).strip()
         record.address = request.POST.get('address', record.address).strip()
         record.gender = request.POST.get('gender', record.gender).strip()
+        record.sr_no = request.POST.get('sr_no', record.sr_no).strip()
+        record.religion = request.POST.get('religion', record.religion).strip()
+        record.rel_type = request.POST.get('rel_type', record.rel_type).strip()
+        record.caste = request.POST.get('cast', record.caste).strip()
+        record.date_of_birth = request.POST.get('date_of_birth', record.date_of_birth).strip()
+        record.village = request.POST.get('village', record.village).strip()
+        record.sec_no = request.POST.get('sec_no', record.sec_no).strip()
+        record.sec_name = request.POST.get('sec_name', record.sec_name).strip()
+        record.ps_name = request.POST.get('ps_name', record.ps_name).strip()
 
         # Validate and save the record
         try:
