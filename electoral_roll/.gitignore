@@ -16,5 +16,22 @@ env/
 # Ignore static files
 /static/
 
+roll/__pycache__/__init__.cpython-312.pyc
+roll/__pycache__/admin.cpython-312.pyc
+roll/__pycache__/apps.cpython-312.pyc
+roll/__pycache__/forms.cpython-312.pyc
+roll/__pycache__/models.cpython-312.pyc
+roll/__pycache__/urls.cpython-312.pyc
+roll/__pycache__/utils.cpython-312.pyc
+roll/__pycache__/views.cpython-312.pyc
+roll/migrations/__pycache__/0001_initial.cpython-312.pyc
+roll/migrations/__pycache__/0002_rename_mob_n0_voterrecord_mob_no.cpython-312.pyc
+roll/migrations/__pycache__/0003_alter_voterrecord_mob_no.cpython-312.pyc
+roll/migrations/__pycache__/0004_voterrecord_sec_name.cpython-312.pyc
+roll/migrations/__pycache__/0005_voterrecord_caste_voterrecord_religion_and_more.cpython-312.pyc
+roll/migrations/__pycache__/__init__.cpython-312.pyc
+        
+        
+
 
 
