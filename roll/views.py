@@ -262,25 +262,34 @@ def search_records(request):
 def edit_record(request, record_id):
     # Get the record or return a 404 if not found
     record = get_object_or_404(VoterRecord, id=record_id)
+    print(record.address)
 
     if request.method == 'POST':
         # Manually get the data from the POST request
-        record.name = request.POST.get('name', record.name).strip()
-        record.rel_name = request.POST.get('rel_name', record.rel_name).strip()
+        record.name = request.POST.get('name', record.name)
+        record.rel_name = request.POST.get('rel_name', record.rel_name)
         record.age = request.POST.get('age', record.age)
-        record.mob_no = request.POST.get('mob_no', record.mob_no).strip()
-        record.voter_id = request.POST.get('voter_id', record.voter_id).strip()
-        record.part_no = request.POST.get('part_no', record.part_no).strip()
-        record.address = request.POST.get('address', record.address).strip()
-        record.gender = request.POST.get('gender', record.gender).strip()
-        record.sr_no = request.POST.get('sr_no', record.sr_no).strip()
-        record.religion = request.POST.get('religion', record.religion).strip()
-        record.rel_type = request.POST.get('rel_type', record.rel_type).strip()
-        record.caste = request.POST.get('cast', record.caste).strip()
-        record.date_of_birth = request.POST.get('date_of_birth', record.date_of_birth).strip()
-        record.village = request.POST.get('village', record.village).strip()
-        record.sec_no = request.POST.get('sec_no', record.sec_no).strip()
-        record.sec_name = request.POST.get('sec_name', record.sec_name).strip()
+        record.mob_no = request.POST.get('mob_no', record.mob_no)
+        record.voter_id = request.POST.get('voter_id', record.voter_id)
+        record.part_no = request.POST.get('part_no', record.part_no)
+        record.address = request.POST.get('address', record.address)
+        record.gender = request.POST.get('gender', record.gender)
+        record.sr_no = request.POST.get('sr_no', record.sr_no)
+        record.religion = request.POST.get('religion', record.religion)
+        record.rel_type = request.POST.get('rel_type', record.rel_type)
+        record.caste = request.POST.get('caste', record.caste)
+        # Parse and handle the date_of_birth field
+        date_of_birth_str = request.POST.get('date_of_birth', record.date_of_birth)
+        if date_of_birth_str:
+            try:
+                # Assuming the format is YYYY-MM-DD; adjust the format if needed
+                record.date_of_birth = datetime.strptime(date_of_birth_str, '%B %d, %Y').date()
+            except ValueError:
+                messages.error(request, 'Invalid date format. Please use YYYY-MM-DD.')
+                return redirect('edit_record', record_id=record.id)  # Redirect back to edit page in case of error
+        record.village = request.POST.get('village', record.village)
+        record.sec_no = request.POST.get('sec_no', record.sec_no)
+        record.sec_name = request.POST.get('sec_name', record.sec_name)
         record.ps_name = request.POST.get('ps_name', record.ps_name).strip()
 
         # Validate and save the record
@@ -288,6 +297,7 @@ def edit_record(request, record_id):
             record.age = int(record.age)
             record.save()
             messages.success(request, 'Record updated successfully!')
+            print(record.address)
             return redirect('search_records')  # Redirect to the search page
         except ValueError:
             messages.error(request, 'Invalid input. Please ensure age is a number.')
