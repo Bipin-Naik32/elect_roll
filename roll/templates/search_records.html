@@ -129,7 +129,7 @@
                 <input type="hidden" name="{{ key }}" value="{{ value }}">
                 {% endfor %}
                 <button type="submit" name="download" value="true" class="btn btn-success">Download as Excel</button>
-                <a href="{% url 'send_sms' %}?{% for record in records %}ids={{ record.id }}&{% endfor %}" class="btn btn-warning">Send SMS</a>
+                <a href="{% url 'send_sms' %}?{% for record in page_obj %}ids={{ record.id }}&{% endfor %}" class="btn btn-warning">Send SMS</a>
             </form>
         {% else %}
             <p class="text-muted">No results found. Try modifying your search.</p>

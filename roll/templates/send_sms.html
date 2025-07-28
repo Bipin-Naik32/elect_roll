@@ -1,22 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Send SMS</title>
-</head>
-<body>
-    <h1>Send SMS to Filtered Records</h1>
-    <h2>Recipients:</h2>
-   <!-- <ul>
-        {% for record in records %}
-        <li>{{ record.name }} ({{ record.mob_no }})</li>
-        {% endfor %}
-    </ul>-->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Send SMS</h2>
     <form method="post">
         {% csrf_token %}
-        <textarea name="custom_message" placeholder="Enter your custom message here..." rows="4" cols="50"></textarea>
-        <br>
-        <button type="submit">Send SMS</button>
-        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+        <div class="mb-3">
+            <label for="custom_message" class="form-label">Custom Message</label>
+            <textarea id="custom_message" name="custom_message" class="form-control" placeholder="Enter your message"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send SMS</button>
     </form>
-</body>
-</html>
+
+    <h3 class="mt-4">Selected Records</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Mobile Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.name }}</td>
+                <td>{{ record.mob_no }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if error %}
+    <div class="alert alert-danger mt-3">
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    {% if success_count is not None %}
+    <div class="alert alert-success mt-3">
+        <p>Successfully sent SMS to {{ success_count }} records.</p>
+        {% if failure_count > 0 %}
+        <p>Failed to send SMS to {{ failure_count }} records.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
