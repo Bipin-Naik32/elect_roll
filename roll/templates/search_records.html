@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
         <h3>Search Electoral Roll</h3>
@@ -35,10 +36,17 @@
                 <label for="addr" class="form-label">Address</label>
                 <input type="text" id="addr" name="addr" class="form-control" placeholder="Search by address">
             </div>
-            <div class="col-md-4">
-                <label for="age" class="form-label">Age</label>
-                <input type="text" id="age" name="age" class="form-control" placeholder="Search by age">
-            </div>
+           <div class="col-md-2">
+    <label for="min_age" class="form-label">Min Age</label>
+    <input type="number" id="min_age" name="min_age" value="{{ request.GET.min_age }}" class="form-control" placeholder="from">
+
+</div>
+
+<div class="col-md-2">
+    <label for="max_age" class="form-label">Max Age</label>
+<input type="number" id="max_age" name="max_age" value="{{ request.GET.max_age }}" class="form-control" placeholder="to">
+    
+</div>
             <div class="col-md-4">
                 <label for="mob_no" class="form-label">Mobile No.</label>
                 <input type="text" id="mob_no" name="mob_no" class="form-control" placeholder="Search by mobile number">
@@ -55,6 +63,25 @@
                 <label for="caste" class="form-label">Caste</label>
                 <input type="text" id="caste" name="caste" class="form-control" placeholder="Search by caste">
             </div>
+           <div class="col-md-4">
+    <label for="status" class="form-label">Status</label>
+    <input type="text"
+           id="status"
+           name="status"
+           value="{{ request.GET.status }}"
+           class="form-control"
+           placeholder="Search by status">
+</div>
+
+<div class="col-md-4">
+    <label for="party_choice" class="form-label">Party Choice</label>
+    <input type="text"
+           id="party_choice"
+           name="party_choice"
+           value="{{ request.GET.party_choice }}"
+           class="form-control"
+           placeholder="Search by party">
+</div>
             <div class="col-md-12 text-end">
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
@@ -78,7 +105,9 @@
                         <th>Voter ID</th>
                         <th>Address</th>
                         <th>Part No.</th>
-                        <th>Action </th>
+                        <th>Status</th>
+                        <th>Party</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,6 +120,9 @@
                         <td>{{ record.voter_id }}</td>
                         <td>{{ record.address }}</td>
                         <td>{{ record.part_no }}</td>
+                        <td>{{ record.status }}</td>
+                        <td>{{ record.party_choice }}</td>
+
                         <td>
                             <a href="{% url 'edit_record' record.id %}" class="btn btn-primary btn-sm">Edit</a>
                         </td>
@@ -124,13 +156,25 @@
                     {% endif %}
                 </ul>
             </nav>
-            <form method="get" class="mt-3">
-                {% for key, value in request.GET.items %}
-                <input type="hidden" name="{{ key }}" value="{{ value }}">
-                {% endfor %}
-                <button type="submit" name="download" value="true" class="btn btn-success">Download as Excel</button>
-                <a href="{% url 'send_sms' %}?{% for record in page_obj %}ids={{ record.id }}&{% endfor %}" class="btn btn-warning">Send SMS</a>
-            </form>
+<form method="get" class="mt-3">
+    {% for key, value in request.GET.items %}
+    <input type="hidden" name="{{ key }}" value="{{ value }}">
+    {% endfor %}
+
+    <button type="submit" name="download" value="true" class="btn btn-success">
+        Download as Excel
+    </button>
+
+    <a href="{% url 'send_sms' %}?{% for record in page_obj %}ids={{ record.id }}&{% endfor %}"
+       class="btn btn-warning">
+        Send SMS
+    </a>
+
+    <a href="{% url 'export_vcf' %}?{% for record in page_obj %}ids={{ record.id }}&{% endfor %}"
+       class="btn btn-success">
+        Export WhatsApp Contacts
+    </a>
+</form>
         {% else %}
             <p class="text-muted">No results found. Try modifying your search.</p>
         {% endif %}

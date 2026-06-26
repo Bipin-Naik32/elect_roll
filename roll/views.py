@@ -13,8 +13,10 @@ from twilio.rest import Client
 from .models import VoterRecord
 from .forms import VoterRecordForm
 from .utils import format_phone_number_to_e164
-
-
+from django.utils.text import slugify
+from .utils import send_sms_gatewayhub
+from django.db.models import Count
+import json
 # Views
 
 def user_login(request):
@@ -33,9 +35,127 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
+
 @login_required
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    # Filter values
+   # part_no = request.GET.get('part_no').strip()
+    #village = request.GET.get('village').strip()
+   # section = request.GET.get('section').strip()
+    part_no = (request.GET.get('part_no') or '').strip()
+    village = (request.GET.get('village') or '').strip()
+    section = (request.GET.get('section') or '').strip()
+     # Base queryset
+    records = VoterRecord.objects.all()
+
+# Apply filters
+    if part_no:
+        try:
+           records = records.filter(part_no=int(part_no))
+        except ValueError:
+           records = records.none()
+
+    if village:
+        records = records.filter(village__icontains=village )
+
+    if section:
+        records = records.filter(sec_name__icontains=section)
+
+    total_voters = records.count()
+
+    active_voters = records.filter(
+        status__iexact='Active'
+    ).count()
+
+    dead_voters = records.filter(
+        status__iexact='Dead'
+    ).count()
+
+    transferred_voters = records.filter(
+        status__iexact='Transferred'
+    ).count()
+
+    mobile_available = (
+        records.exclude(mob_no__isnull=True)
+        .exclude(mob_no='')
+        .count()
+    )
+
+    mobile_missing = total_voters - mobile_available
+
+    if total_voters > 0:
+        mobile_coverage = round(
+            (mobile_available / total_voters) * 100,
+            2
+        )
+    else:
+        mobile_coverage = 0
+   # Gender
+    male_count = records.filter(gender='Male').count()
+    female_count = records.filter(gender='Female').count()
+    other_count = records.filter(gender='Other').count()
+
+# Religion
+    religion_stats = (
+        records.exclude(religion__isnull=True)
+        .exclude(religion='')
+        .values('religion')
+        .annotate(total=Count('id'))
+        .order_by('-total')
+         )
+
+# Caste
+    caste_stats = (
+        records
+         .exclude(caste__isnull=True)
+         .exclude(caste='')
+         .values('caste')
+          .annotate(total=Count('id'))
+         .order_by('-total')
+        )
+    religion_labels = [r['religion'] for r in religion_stats]
+    religion_counts = [r['total'] for r in religion_stats]
+
+    caste_labels = [c['caste'] for c in caste_stats]
+    caste_counts = [c['total'] for c in caste_stats]
+
+# Age Groups
+    age_18_25 = records.filter(age__gte=18, age__lte=25).count()
+    age_26_35 = records.filter(age__gte=26, age__lte=35).count()
+    age_36_45 = records.filter(age__gte=36, age__lte=45).count()
+    age_46_60 = records.filter(age__gte=46, age__lte=60).count()
+    age_60_plus = records.filter(age__gt=60).count()
+
+    context = {
+        'total_voters': total_voters,
+        'active_voters': active_voters,
+        'dead_voters': dead_voters,
+        'transferred_voters': transferred_voters,
+        'mobile_available': mobile_available,
+        'mobile_missing': mobile_missing,
+        'mobile_coverage': mobile_coverage,
+        'male_count': male_count,
+'female_count': female_count,
+'other_count': other_count,
+
+'religion_stats': religion_stats,
+'caste_stats': caste_stats,
+'religion_labels': json.dumps(religion_labels),
+'religion_counts': json.dumps(religion_counts),
+
+'caste_labels': json.dumps(caste_labels),
+'caste_counts': json.dumps(caste_counts),
+'age_18_25': age_18_25,
+'age_26_35': age_26_35,
+'age_36_45': age_36_45,
+'age_46_60': age_46_60,
+'age_60_plus': age_60_plus,
+ 'selected_part': part_no,
+'selected_village': village,
+'selected_section': section,
+   }
+
+    return render(request, 'dashboard.html', context)
 
 
 
@@ -71,6 +191,8 @@ def add_record(request):
         village = request.POST.get('village', '').strip()
         religion = request.POST.get('religion', '').strip()
         caste = request.POST.get('caste', '').strip()
+        status = request.POST.get('status', 'Active').strip()
+        party_choice = request.POST.get('party_choice', '').strip()
 
         # Validate the fields (basic server-side validation)
         if not all([name, rel_name, age, voter_id, address, mob_no, gender]):
@@ -113,6 +235,8 @@ def add_record(request):
                 village=village,
                 religion=religion,
                 caste=caste,
+                status=status,
+                party_choice=party_choice,
             )
             messages.success(request, 'Voter record added successfully!')
             return redirect('dashboard')
@@ -144,6 +268,38 @@ def send_sms(request):
 
     # Fetch the filtered records
     records = VoterRecord.objects.filter(id__in=record_ids)
+    if request.method == "POST":
+
+       custom_message = request.POST.get("custom_message", "")
+
+       success_count = 0
+       failure_count = 0
+
+       for record in records:
+
+           if record.mob_no:
+
+               mobile = str(record.mob_no).strip()
+
+               result = send_sms_gatewayhub(
+                   mobile,
+                   f"Hello {record.name}, {custom_message}"
+                )
+
+               print(result)
+
+               success_count += 1
+
+       return render(
+           request,
+           "send_sms.html",
+          {
+            "records": records,
+            "success_count": success_count,
+            "failure_count": failure_count
+          }
+       )
+    
 
     '''if request.method == "POST":
         # Get the custom message from the form
@@ -173,7 +329,11 @@ def send_sms(request):
 def search_records(request):
     #query = request.GET.get('query')
     name = request.GET.get('name')
-    age = request.GET.get('age')
+    #age = request.GET.get('age')
+    min_age = request.GET.get('min_age')
+    max_age = request.GET.get('max_age')
+    print("MIN AGE =", min_age)
+    print("MAX AGE =", max_age)
     part_no = request.GET.get('part_no')
     voter_id = request.GET.get('voter_id')
     rel_name = request.GET.get('rel_name')
@@ -184,13 +344,20 @@ def search_records(request):
     village= request.GET.get('village')
     religion= request.GET.get('religion')
     caste = request.GET.get('caste')
+    status = request.GET.get('status')
+    party_choice = request.GET.get('party_choice')
     records = VoterRecord.objects.all()
-    
+
+
    
     if name: 
         records = records.filter(name__icontains = name)
-    if age :
-        records = records.filter(age=age)
+    #if age :
+     #   records = records.filter(age=age)
+    if min_age:
+        records = records.filter(age__gte=min_age)
+    if max_age:
+        records = records.filter(age__lte=max_age)
     if part_no:
         records = records.filter(part_no=part_no)
     if voter_id:
@@ -211,11 +378,15 @@ def search_records(request):
         records = records.filter(religion__icontains=religion)
     if caste:
         records = records.filter(caste__icontains=caste)
+    if status:
+        records = records.filter(status__icontains=status)
+    if party_choice:
+        records = records.filter(party_choice__icontains=party_choice)
 
     print("Filtered records query:", records.query)
     print("Filtered records count:", records.count())
 
-    if not any([name, age, part_no, voter_id,rel_name,address, mob_no,gender,sec_name,village,religion,caste]):
+    if not any([name,min_age,max_age,part_no,voter_id,rel_name,address,mob_no,gender,sec_name,village,religion,caste,status,party_choice]):
         records = VoterRecord.objects.none()
 
     # Set up pagination
@@ -232,7 +403,8 @@ def search_records(request):
         worksheet.title = "Search Results"
 
         # Add headers
-        headers = ['Name','Relative Name','Age','Mobile Number', 'Voter ID', 'Part_no','Address','Gender']
+        headers = ['Name','Relative Name','Age','Mobile Number', 'Voter ID', 'Part_no','Address','Gender','Status',
+'Party Choice',]
         worksheet.append(headers)
 
         # Add data rows
@@ -246,6 +418,8 @@ def search_records(request):
                 record.part_no,
                 record.address,
                 record.gender,
+                record.status,
+                record.party_choice,
             ])
 
         # Prepare the response as an Excel file
@@ -291,6 +465,8 @@ def edit_record(request, record_id):
         record.sec_no = request.POST.get('sec_no', record.sec_no)
         record.sec_name = request.POST.get('sec_name', record.sec_name)
         record.ps_name = request.POST.get('ps_name', record.ps_name).strip()
+        record.status = request.POST.get('status', record.status)
+        record.party_choice = request.POST.get('party_choice', record.party_choice)
 
         # Validate and save the record
         try:
@@ -303,7 +479,41 @@ def edit_record(request, record_id):
             messages.error(request, 'Invalid input. Please ensure age is a number.')
 
     return render(request, 'edit_record.html', {'record': record})
+@login_required
+def export_vcf(request):
+    record_ids = request.GET.getlist('ids')
 
+    records = VoterRecord.objects.filter(id__in=record_ids)
+
+    if records.exists():
+        section_name = records.first().sec_name or "contacts"
+    else:
+        section_name = "contacts"
+
+    filename = f"{slugify(section_name)}.vcf"
+
+    response = HttpResponse(content_type='text/vcard')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    for record in records:
+        mobile = str(record.mob_no).strip()
+
+        if not mobile:
+            continue
+
+        if len(mobile) == 10:
+            mobile = "91" + mobile
+
+        response.write(
+            f"BEGIN:VCARD\n"
+            f"VERSION:3.0\n"
+            f"N:{record.name}\n"
+            f"FN:[{record.sec_name}] {record.name}\n"
+            f"TEL;TYPE=CELL:+{mobile}\n"
+            f"END:VCARD\n"
+        )
+
+    return response
 
 @login_required
 def return_to_dashboard(request):

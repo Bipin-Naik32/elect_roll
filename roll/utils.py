@@ -1,4 +1,5 @@
 import phonenumbers
+import requests
 from phonenumbers import NumberParseException
 
 def format_phone_number_to_e164(phone_number, region="IN"):
@@ -23,3 +24,25 @@ def format_phone_number_to_e164(phone_number, region="IN"):
         # Handle parsing errors (e.g., invalid number format)
         print(f"Error parsing number: {str(e)}")
         return None
+
+def send_sms_gatewayhub(mobile, message):
+
+    url = "https://www.smsgatewayhub.com/api/mt/SendSMS"
+
+    payload = {
+        "APIKey": "WWpm6PJPoUWwjNLwNFxZ0w",
+        "senderid": "TESTIN",
+        "channel": "2",
+        "DCS": "0",
+        "flashsms": "0",
+        "number": mobile,
+        "text": message,
+        "route": "1"
+    }
+
+    try:
+        response = requests.post(url, data=payload)
+        return response.text
+
+    except Exception as e:
+        return str(e)
