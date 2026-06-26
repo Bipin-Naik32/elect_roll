@@ -46,6 +46,10 @@
                     <label for="sr_no" class="form-label">Serial Number</label>
                     <input type="text" id="sr_no" name="sr_no" class="form-control" value="{{ record.sr_no }}">
                 </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" id="address" name="address" class="form-control" value="{{ record.address }}">
+                </div>
             </div>
         </div>
 
@@ -72,6 +76,14 @@
                     <label for="caste" class="form-label">Caste</label>
                     <input type="text" id="caste" name="caste" class="form-control" value="{{ record.caste }}">
                 </div>
+                <div class="mb-3">
+                <label for="profession" class="form-label">Profession</label>
+                    <input type="text"
+                    id="profession"
+                    name="profession"
+                    class="form-control"
+                    value="{{ record.profession }}">
+                    </div>
             </div>
             <div class="col-md-6" style="border: 1px groove #ccc; padding: 15px;border-radius: 5px;">
                 <div class="mb-3">
@@ -106,10 +118,7 @@
            value="{{ record.party_choice }}">
 </div>
 
-                <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" value="{{ record.address }}">
-                </div>
+                
             </div>
         </div>
         <button type="submit" class="btn btn-success">Save Changes</button>

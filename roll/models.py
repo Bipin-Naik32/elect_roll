@@ -23,6 +23,7 @@ class VoterRecord(models.Model):
     caste = models.CharField(max_length=15, null=True, blank=True)
     status = models.CharField( max_length=50,default='Active')
     party_choice = models.CharField(max_length=50,blank=True,null=True)
+    profession = models.CharField(max_length=100, blank=True, null=True)
 
 
     def __str__(self):

@@ -193,6 +193,7 @@ def add_record(request):
         caste = request.POST.get('caste', '').strip()
         status = request.POST.get('status', 'Active').strip()
         party_choice = request.POST.get('party_choice', '').strip()
+        profession = request.POST.get('profession', '').strip()
 
         # Validate the fields (basic server-side validation)
         if not all([name, rel_name, age, voter_id, address, mob_no, gender]):
@@ -237,9 +238,10 @@ def add_record(request):
                 caste=caste,
                 status=status,
                 party_choice=party_choice,
+                profession=profession,
             )
             messages.success(request, 'Voter record added successfully!')
-            return redirect('dashboard')
+            return redirect('add_record')
     
     return render(request, 'add_record.html')
 
@@ -467,6 +469,7 @@ def edit_record(request, record_id):
         record.ps_name = request.POST.get('ps_name', record.ps_name).strip()
         record.status = request.POST.get('status', record.status)
         record.party_choice = request.POST.get('party_choice', record.party_choice)
+        record.profession = request.POST.get('profession', '').strip()
 
         # Validate and save the record
         try:
