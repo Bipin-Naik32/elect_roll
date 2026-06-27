@@ -11,5 +11,9 @@ urlpatterns = [
     path('return-to-dashboard/', views.return_to_dashboard, name='return_to_dashboard'),
     path('suggest-voter-id/', views.suggest_voter_id, name='suggest_voter_id'),
     path('edit-record/<int:record_id>/', views.edit_record, name='edit_record'),
-    path('export-vcf/', views.export_vcf, name='export_vcf'),   
+    path('export-vcf/', views.export_vcf, name='export_vcf'), 
+    path('gradation/',views.gradation_home,name='gradation_home'),
+    path('gradation/list/',views.gradation_list,name='gradation_list'),
+    path('gradation/edit/<int:voter_id>/',views.gradation_edit,name='gradation_edit'),
+    path('gradation/get-castes/',views.get_castes, name='get_castes'),  
 ]

@@ -17,6 +17,9 @@ from django.utils.text import slugify
 from .utils import send_sms_gatewayhub
 from django.db.models import Count
 import json
+from .models import VoterRecord, VoterGradation
+from .models import CategoryMaster, CasteMaster
+
 # Views
 
 def user_login(request):
@@ -521,3 +524,153 @@ def export_vcf(request):
 @login_required
 def return_to_dashboard(request):
     return redirect('dashboard')
+
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def gradation_home(request):
+    part_numbers = (
+        VoterRecord.objects
+        .values_list("part_no", flat=True)
+        .distinct()
+        .order_by("part_no")
+    )
+
+    return render(
+        request,
+        "gradation/home.html",
+        {
+            "part_numbers": part_numbers,
+        },
+    )
+
+@login_required
+def gradation_list(request):
+
+    part_no = request.GET.get("part_no")
+
+    voters = (
+        VoterRecord.objects
+        .filter(part_no=part_no)
+        .order_by("name")
+    )
+    # Automatically create a gradation record for every voter
+    for voter in voters:
+        VoterGradation.objects.get_or_create(
+        voter=voter
+    )
+
+    completed_ids = VoterGradation.objects.filter(
+        completed=True
+    ).values_list(
+        "voter_id",
+        flat=True
+    )
+
+    total = voters.count()
+
+    completed = VoterGradation.objects.filter(
+    voter__part_no=part_no,
+    completed=True
+    ).count()
+
+    total = voters.count()
+
+    pending = total - completed
+
+    context = {
+
+        "part_no": part_no,
+
+        "voters": voters,
+
+        "total": total,
+
+        "completed": completed,
+
+        "pending": pending,
+
+    }
+
+    return render(
+        request,
+        "gradation/list.html",
+        context
+    )
+
+@login_required
+def gradation_edit(request, voter_id):
+    voter = get_object_or_404(
+        VoterRecord,
+        id=voter_id
+    )
+
+    gradation = VoterGradation.objects.filter(
+    voter=voter
+).first()
+
+    # All voters in same part ordered alphabetically
+    voters_in_part = VoterRecord.objects.filter(
+        part_no=voter.part_no
+    ).order_by("name")
+
+    total_voters = voters_in_part.count()
+
+    # Find current voter's position
+    current_number = 1
+    for index, v in enumerate(voters_in_part, start=1):
+        if v.id == voter.id:
+            current_number = index
+            break
+    
+    categories = CategoryMaster.objects.all()
+
+    if request.method == "POST":
+
+        gradation, created = VoterGradation.objects.get_or_create(
+        voter=voter
+    )
+        gradation.traditional = request.POST.get("traditional")
+        gradation.swing_reason = request.POST.get("swing_reason")
+        gradation.religion = request.POST.get("religion")
+        gradation.category = request.POST.get("category")
+        gradation.caste = request.POST.get("caste")
+        gradation.occupation = request.POST.get("occupation", "")
+        gradation.mobile_number = request.POST.get("mobile_number", "")
+        gradation.completed = True
+        gradation.save()
+
+        voter.party_choice = gradation.traditional
+        voter.religion = gradation.religion
+        voter.category = gradation.category
+        voter.caste = gradation.caste
+        voter.profession = gradation.occupation
+        voter.mob_no = gradation.mobile_number
+        voter.save()
+
+        messages.success(request, "Voter gradation saved successfully.")
+        return redirect(f"{reverse('gradation_list')}?part_no={voter.part_no}")
+    return render(
+    request,
+    "gradation/edit.html",
+    {
+        "voter": voter,
+        "gradation": gradation,
+        "current_number": current_number,
+        "total_voters": total_voters,
+        "categories": categories,
+    },
+)
+
+def get_castes(request):
+    category = request.GET.get("category")
+
+    castes = CasteMaster.objects.filter(
+        category__name=category
+    ).order_by("name")
+
+    return JsonResponse(
+        list(castes.values("id", "name")),
+        safe=False
+    )

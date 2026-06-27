@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from .models import VoterRecord  # Ensure you import your actual model
+from .models import VoterRecord,VoterGradation # Ensure you import your actual model
 
 class VoterRecordForm(forms.ModelForm):
     class Meta:
@@ -72,3 +72,79 @@ class VoterRecordForm(forms.ModelForm):
         if not address or len(address) < 10:
             self.add_error('address', "Address must be at least 10 characters long.")
         return cleaned_data
+
+CATEGORY_CHOICES = [
+    ("General", "General"),
+    ("OBC", "OBC"),
+    ("SC", "SC"),
+    ("ST", "ST"),
+]
+
+TRADITIONAL_CHOICES = [
+    ("BJP", "BJP"),
+    ("Congress", "Congress"),
+    ("Swing", "Swing"),
+    ("Deceased", "Deceased"),
+]
+
+RELIGION_CHOICES = [
+    ("Hindu", "Hindu"),
+    ("Muslim", "Muslim"),
+    ("Christian", "Christian"),
+    ("Buddhist", "Buddhist"),
+    ("Jain", "Jain"),
+    ("Other", "Other"),
+]
+
+
+class GradationForm(forms.ModelForm):
+
+    class Meta:
+        model = VoterGradation
+
+        fields = [
+            "traditional",
+            "religion",
+            "category",
+            "caste",
+            "occupation",
+            "mobile_number",
+        ]
+
+        widgets = {
+
+            "traditional": forms.RadioSelect(
+                choices=TRADITIONAL_CHOICES
+            ),
+
+            "religion": forms.RadioSelect(
+                choices=RELIGION_CHOICES
+            ),
+
+            "category": forms.Select(
+                choices=CATEGORY_CHOICES,
+                attrs={"class": "form-select"}
+            ),
+
+            "caste": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter caste"
+                }
+            ),
+
+            "occupation": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter occupation"
+                }
+            ),
+
+            "mobile_number": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Enter mobile number"
+                }
+            ),
+
+        }

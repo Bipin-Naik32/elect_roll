@@ -1,0 +1,728 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Top Card -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+
+            <div class="row">
+
+                <!-- Left Side -->
+                <div class="col-md-9">
+
+                    <h2 class="fw-bold mb-3">
+                        {{ voter.name }}
+                    </h2>
+
+                    <p class="mb-1">
+                        <strong>{{ voter.rel_type }}'s Name:</strong>
+                        {{ voter.rel_name }}
+                    </p>
+
+                    <p class="mb-3">
+                        <strong>Address:</strong>
+                        {{ voter.address }}
+                    </p>
+
+                    <div class="row text-center">
+
+                        <div class="col-md-3">
+                            <h6 class="text-muted mb-1">AC No</h6>
+                            <strong>22 - Siroda</strong>
+                        </div>
+
+                        <div class="col-md-2">
+                            <h6 class="text-muted mb-1">Booth</h6>
+                            <strong>{{ voter.part_no }}</strong>
+                        </div>
+
+                        <div class="col-md-2">
+                            <h6 class="text-muted mb-1">Age</h6>
+                            <strong>{{ voter.age }}</strong>
+                        </div>
+
+                        <div class="col-md-2">
+                            <h6 class="text-muted mb-1">Gender</h6>
+                            <strong>{{ voter.gender }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{% url 'gradation_list' %}?part_no={{ voter.part_no }}"
+                           class="text-decoration-none">
+                            ← Back to list
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- Right Side Progress -->
+                <div class="col-md-3 text-center">
+
+                    <div class="bg-primary text-white rounded-4 d-inline-flex flex-column justify-content-center align-items-center"
+                         style="width:120px;height:120px;">
+
+                        <h1 class="mb-0 fw-bold">
+                            {{ current_number }}
+                        </h1>
+
+                        <small>
+                            of {{ total_voters }}
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<form method="POST">
+
+{% csrf_token %}
+<!-- Question 1 -->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <h6 class="fw-bold">QUESTION 1</h6>
+        <p>Whether the voter is a traditional?</p>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="traditional"
+                       id="swing"
+                       value="Swing"
+                       autocomplete="off">
+
+                <label class="option-card" for="swing">
+                    Swing
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="traditional"
+                       id="anti"
+                       value="Anti-BJP"
+                       autocomplete="off">
+
+                <label class="option-card" for="anti">
+                    Anti-BJP
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="traditional"
+                       id="voter"
+                       value="Voter"
+                       autocomplete="off">
+
+                <label class="option-card" for="voter">
+                    Voter
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="traditional"
+                       id="deceased"
+                       value="Deceased"
+                       autocomplete="off">
+
+                <label class="option-card" for="deceased">
+                    Deceased
+                </label>
+            </div>
+
+        </div>
+
+        <!-- Hidden initially -->
+        <div class="mt-3" id="swingReasonDiv" style="display:none;">
+            <label class="form-label fw-semibold">
+                Reason for Swing
+            </label>
+
+            <textarea
+                name="swing_reason"
+                id="swingReason"
+                class="form-control"
+                rows="3"
+                placeholder="Enter reason why voter is Swing"></textarea>
+        </div>
+
+    </div>
+</div>
+<!--Question2-->
+<!-- Question 2 -->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <h6 class="fw-bold">QUESTION 2</h6>
+        <p>Religion of the person?</p>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="hindu"
+                       value="Hindu"
+                       autocomplete="off">
+
+                <label class="option-card" for="hindu">
+                    Hindu
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="muslim"
+                       value="Muslim"
+                       autocomplete="off">
+
+                <label class="option-card" for="muslim">
+                    Muslim
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="catholic"
+                       value="Catholic"
+                       autocomplete="off">
+
+                <label class="option-card" for="catholic">
+                    Catholic
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="sikh"
+                       value="Sikh"
+                       autocomplete="off">
+
+                <label class="option-card" for="sikh">
+                    Sikh
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="jain"
+                       value="Jain"
+                       autocomplete="off">
+
+                <label class="option-card" for="jain">
+                    Jain
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="religion"
+                       id="otherReligion"
+                       value="Other"
+                       autocomplete="off">
+
+                <label class="option-card" for="otherReligion">
+                    Other
+                </label>
+            </div>
+
+        </div>
+
+        <!-- Other Religion -->
+        <div class="mt-3" id="otherReligionDiv" style="display:none;">
+            <label class="form-label fw-semibold">
+                Specify Religion
+            </label>
+
+            <input type="text"
+                   class="form-control"
+                   name="other_religion"
+                   id="otherReligionText"
+                   placeholder="Enter Religion">
+        </div>
+
+    </div>
+</div>
+<!--Question2 end-->
+<!--Question3-->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+
+        <h6 class="fw-bold">QUESTION 3</h6>
+
+        <p>Category</p>
+
+        <select class="form-select"
+                id="category"
+                name="category">
+
+            <option value="">Select Category</option>
+
+            {% for category in categories %}
+                <option value="{{ category.name }}"
+                    {% if gradation.category == category.name %}
+                        selected
+                    {% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+
+        </select>
+
+    </div>
+</div>
+<!--end-->
+<!-- Question 4 -->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+
+        <h6 class="fw-bold">QUESTION 4</h6>
+
+        <p>Caste</p>
+
+        <select
+            class="form-select"
+            id="caste"
+            name="caste">
+
+            <option value="">Select Category First</option>
+
+        </select>
+
+    </div>
+</div>
+<!-- Question 5 -->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+
+        <h6 class="fw-bold">QUESTION 5</h6>
+        <p>Occupation of the voter?</p>
+
+        <div class="row g-3">
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="govt"
+                       value="Government Servant"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Government Servant" %}checked{% endif %}>
+
+                <label class="option-card" for="govt">
+                    Government Servant
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="service"
+                       value="Service"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Service" %}checked{% endif %}>
+
+                <label class="option-card" for="service">
+                    Service
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="business"
+                       value="Business"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Business" %}checked{% endif %}>
+
+                <label class="option-card" for="business">
+                    Business
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="agriculture"
+                       value="Agriculture"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Agriculture" %}checked{% endif %}>
+
+                <label class="option-card" for="agriculture">
+                    Agriculture
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="hospitality"
+                       value="Hospitality"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Hospitality" %}checked{% endif %}>
+
+                <label class="option-card" for="hospitality">
+                    Hospitality
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="retired"
+                       value="Retired"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Retired" %}checked{% endif %}>
+
+                <label class="option-card" for="retired">
+                    Retired
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="homemaker"
+                       value="Home Maker"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Home Maker" %}checked{% endif %}>
+
+                <label class="option-card" for="homemaker">
+                    Home Maker
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="doctor"
+                       value="Doctor"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Doctor" %}checked{% endif %}>
+
+                <label class="option-card" for="doctor">
+                    Doctor
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="advocate"
+                       value="Advocate"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Advocate" %}checked{% endif %}>
+
+                <label class="option-card" for="advocate">
+                    Advocate
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="student"
+                       value="Student"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Student" %}checked{% endif %}>
+
+                <label class="option-card" for="student">
+                    Student
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="labour"
+                       value="Labour"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Labour" %}checked{% endif %}>
+
+                <label class="option-card" for="labour">
+                    Labour
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="driver"
+                       value="Driver"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Driver" %}checked{% endif %}>
+
+                <label class="option-card" for="driver">
+                    Driver
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="fisherman"
+                       value="Fisherman"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Fisherman" %}checked{% endif %}>
+
+                <label class="option-card" for="fisherman">
+                    Fisherman
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio" class="btn-check"
+                       name="occupation"
+                       id="selfemployed"
+                       value="Self Employed"
+                       autocomplete="off"
+                       {% if gradation.occupation == "Self Employed" %}checked{% endif %}>
+
+                <label class="option-card" for="selfemployed">
+                    Self Employed
+                </label>
+            </div>
+
+            <div class="col-md-6">
+                <input type="radio"
+                       class="btn-check"
+                       name="occupation"
+                       id="occupation_other_radio"
+                       value="Other"
+                       autocomplete="off">
+
+                <label class="option-card" for="occupation_other_radio">
+                    Other
+                </label>
+            </div>
+
+        </div>
+
+        <div class="mt-3" id="occupation_other_div" style="display:none;">
+            <label class="form-label fw-semibold">
+                Specify Occupation
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                id="occupation_other"
+                name="occupation_other"
+                placeholder="Enter Occupation">
+        </div>
+
+    </div>
+</div>
+<!-- Question 6 -->
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+
+        <h6 class="fw-bold text-primary">
+            QUESTION 6
+        </h6>
+
+        <p class="fw-semibold">
+            Mobile Number
+        </p>
+
+        <input
+            type="text"
+            class="form-control form-control-lg"
+            name="mobile_number"
+            value="{{ voter.mob_no }}"
+            maxlength="10"
+            placeholder="Enter Mobile Number">
+
+    </div>
+</div>
+<div class="text-center mt-5 mb-4">
+
+    <button type="submit" class="btn btn-success btn-lg px-5">
+        Save & Continue
+    </button>
+
+</div>
+</form>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const radios = document.querySelectorAll('input[name="traditional"]');
+    const reasonDiv = document.getElementById("swingReasonDiv");
+    const reasonBox = document.getElementById("swingReason");
+
+    function toggleReason() {
+        const selected = document.querySelector('input[name="traditional"]:checked');
+
+        if (selected && selected.value === "Swing") {
+            reasonDiv.style.display = "block";
+            reasonBox.required = true;
+        } else {
+            reasonDiv.style.display = "none";
+            reasonBox.required = false;
+            reasonBox.value = "";
+        }
+    }
+
+    radios.forEach(radio => {
+        radio.addEventListener("change", toggleReason);
+    });
+
+    toggleReason();
+    const religionRadios = document.querySelectorAll('input[name="religion"]');
+const otherReligionDiv = document.getElementById("otherReligionDiv");
+const otherReligionText = document.getElementById("otherReligionText");
+
+function toggleOtherReligion() {
+    const selected = document.querySelector('input[name="religion"]:checked');
+
+    if (selected && selected.value === "Other") {
+        otherReligionDiv.style.display = "block";
+        otherReligionText.required = true;
+    } else {
+        otherReligionDiv.style.display = "none";
+        otherReligionText.required = false;
+        otherReligionText.value = "";
+    }
+}
+
+religionRadios.forEach(radio => {
+    radio.addEventListener("change", toggleOtherReligion);
+});
+
+toggleOtherReligion();
+});
+
+const category = document.getElementById("category");
+const caste = document.getElementById("caste");
+
+function loadCastes(selectedCaste = "") {
+
+    const categoryValue = category.value;
+
+    if (!categoryValue) {
+        caste.innerHTML = "<option value=''>Select Category First</option>";
+        return;
+    }
+
+    fetch(`/gradation/get-castes/?category=${categoryValue}`)
+    .then(response => response.json())
+    .then(data => {
+
+        caste.innerHTML = "<option value=''>Select Caste</option>";
+
+        data.forEach(item => {
+
+            const option = document.createElement("option");
+
+            option.value = item.name;
+            option.textContent = item.name;
+
+            if (item.name === selectedCaste) {
+                option.selected = true;
+            }
+
+            caste.appendChild(option);
+
+        });
+
+    });
+
+}
+
+category.addEventListener("change", function () {
+    loadCastes();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    loadCastes("{{ gradation.caste|default:''|escapejs }}");
+});
+</script>
+<script>
+function toggleOccupationOther(){
+
+    const other=document.getElementById("occupation_other_radio");
+    const div=document.getElementById("occupation_other_div");
+    const txt=document.getElementById("occupation_other");
+
+    if(other.checked){
+        div.style.display="block";
+        txt.required=true;
+    }else{
+        div.style.display="none";
+        txt.required=false;
+        txt.value="";
+    }
+}
+
+document.querySelectorAll('input[name="occupation"]').forEach(r=>{
+    r.addEventListener("change",toggleOccupationOther);
+});
+
+toggleOccupationOther();
+</script>
+<style>
+
+.option-card{
+    display:block;
+    width:100%;
+    padding:18px;
+    border:2px solid #dfe3e8;
+    border-radius:14px;
+    background:#fff;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:500;
+    transition:.25s;
+    text-align:left;
+}
+
+.option-card:hover{
+    border-color:#4f8df7;
+}
+
+.btn-check:checked + .option-card{
+    border:2px solid #2563eb;
+    background:#eef5ff;
+    color:#2563eb;
+    font-weight:600;
+}
+
+.btn-check:checked + .option-card::before{
+    content:"";
+    display:inline-block;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:#2563eb;
+    margin-right:10px;
+    vertical-align:middle;
+}
+
+.option-card::before{
+    content:"";
+    display:inline-block;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    border:2px solid #bfc6cf;
+    margin-right:10px;
+    vertical-align:middle;
+}
+
+</style>
+{% endblock %}

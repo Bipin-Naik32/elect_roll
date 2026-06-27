@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+     <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                Gradation List
+            </h2>
+
+            <span class="text-secondary">
+
+                AC {{ voters.0.ac_no }}
+                ·
+                {{ voters.0.ac_name }}
+                ·
+                Booth {{ part_no }}
+
+            </span>
+
+        </div>
+
+        <div class="text-end">
+
+            <h3 class="fw-bold mb-1">
+
+                <span class="text-primary">
+
+                    {{ done_count }}
+
+                </span>
+
+                <span class="text-secondary">
+
+                    / {{ total }} done
+
+                </span>
+
+            </h3>
+
+            <a href="{% url 'logout' %}"
+               class="btn btn-light border rounded-pill px-4">
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+<!-- Search -->
+
+    <div class="mb-4">
+
+        <input
+
+            id="searchBox"
+
+            class="form-control form-control-lg rounded-4"
+
+            placeholder="Search by name..."
+
+        >
+
+    </div>
+<!-- Tabs -->
+
+    <div class="mb-4">
+
+        <button
+            class="btn btn-primary rounded-pill px-4 me-2"
+            onclick="filterStatus('all')">
+
+            All ({{ total }})
+
+        </button>
+
+        <button
+            class="btn btn-outline-secondary rounded-pill px-4 me-2"
+            onclick="filterStatus('pending')">
+
+            Pending ({{ pending}})
+
+        </button>
+
+        <button
+            class="btn btn-outline-secondary rounded-pill px-4"
+            onclick="filterStatus('done')">
+
+            Done ({{ done}})
+
+        </button>
+
+    </div>
+
+<div class="card shadow">
+
+
+<div class="card-body">
+
+
+<!--Bootstrap start-->
+<div class="container mt-4">
+
+   {% for voter in voters %}
+
+    <div class="card shadow-sm border-0 rounded-4 mb-3 voter-card"
+
+         data-name="{{ voter.name|lower }}"
+
+         data-status="{% if voter.gradation and voter.gradation.completed %}done{% else %}pending{% endif %}">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+
+                    <h5 class="fw-bold mb-2">
+
+                        {{ voter.name }}
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Age : {{ voter.age }}
+
+                        |
+
+                        {{ voter.gender }}
+
+                        |
+
+                        Sr. No. {{ voter.sr_no }}
+
+                    </small>
+
+                </div>
+
+                <div class="col-md-4 text-end">
+
+                    {% if voter.gradation.completed %}
+
+                        <span class="badge bg-success fs-6 me-3">
+
+                            Done
+
+                        </span>
+
+                        <a href="{% url 'gradation_edit' voter.id %}"
+
+                           class="btn btn-outline-success rounded-pill">
+
+                            Edit
+
+                        </a>
+
+                    {% else %}
+
+                        <span class="badge bg-warning text-dark fs-6 me-3">
+
+                            Pending
+
+                        </span>
+
+                        <a href="{% url 'gradation_edit' voter.id %}"
+
+                           class="btn btn-success rounded-pill">
+
+                            Open
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-warning">
+
+        No voters found.
+
+    </div>
+
+    {% endfor %}
+
+</div>
+    <!--
+     Voter Cards 
+
+    {% for voter in voters %}
+
+    <div class="card shadow-sm mb-3">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                < Name 
+                <div class="col-md-6">
+
+                    <h5 class="mb-0">
+                        {{ voter.name }}
+                    </h5>
+
+                </div>
+
+                <! Status 
+                <div class="col-md-3 text-center">
+
+                    {% if voter.gradation.completed %}
+
+                        <span class="badge bg-success px-3 py-2">
+                            Done
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-warning text-dark px-3 py-2">
+                            Pending
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+                <-- Button ->
+                <div class="col-md-3 text-end">
+
+                    <a href="{% url 'gradation_edit' voter.id %}"
+                       class="btn btn-primary">
+
+                        Open
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="alert alert-warning">
+        No voters found.
+    </div>
+
+    {% endfor %}
+-->
+</div>
+<!--Bootstrap end-->
+</div>
+
+</div>
+
+</div>
+<script>
+
+const searchBox=document.getElementById("searchBox");
+
+searchBox.addEventListener("keyup",function(){
+
+    let value=this.value.toLowerCase();
+
+    document.querySelectorAll(".voter-card").forEach(function(card){
+
+        let name=card.dataset.name;
+
+        card.style.display=name.includes(value)?"block":"none";
+
+    });
+
+});
+
+function filterCards(status){
+
+    document.querySelectorAll(".voter-card").forEach(function(card){
+
+        if(status=="all"){
+
+            card.style.display="block";
+
+        }
+
+        else{
+
+            card.style.display=
+
+            card.dataset.status==status
+
+            ?"block"
+
+            :"none";
+
+        }
+
+    });
+
+}
+
+</script>
+
+<style>
+
+body{
+
+background:#f5f7fb;
+
+}
+
+.card{
+
+transition:.2s;
+
+}
+
+.card:hover{
+
+transform:translateY(-2px);
+
+}
+
+.form-control{
+
+height:55px;
+
+font-size:17px;
+
+}
+
+.badge{
+
+padding:10px 18px;
+
+border-radius:20px;
+
+}
+
+</style>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-warning">
+            <h3 class="mb-0">Voter Gradation</h3>
+        </div>
+
+        <div class="card-body">
+
+            <form method="get" action="{% url 'gradation_list' %}">
+
+    <label class="form-label">
+        Select Part Number
+    </label>
+
+    <select
+        class="form-select"
+        name="part_no"
+        required>
+
+        <option value="">
+            Select Part Number
+        </option>
+
+        {% for part in part_numbers %}
+
+        <option value="{{ part }}">
+            {{ part }}
+        </option>
+
+        {% endfor %}
+
+    </select>
+
+    <button
+        class="btn btn-primary mt-3">
+
+        Load Voters
+
+    </button>
+
+</form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

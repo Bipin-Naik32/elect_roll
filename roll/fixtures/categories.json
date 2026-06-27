@@ -1,0 +1,37 @@
+[
+    {
+        "model": "roll.categorymaster",
+        "pk": 1,
+        "fields": {
+            "name": "General"
+        }
+    },
+    {
+        "model": "roll.categorymaster",
+        "pk": 2,
+        "fields": {
+            "name": "SC"
+        }
+    },
+    {
+        "model": "roll.categorymaster",
+        "pk": 3,
+        "fields": {
+            "name": "ST"
+        }
+    },
+    {
+        "model": "roll.categorymaster",
+        "pk": 4,
+        "fields": {
+            "name": "OBC"
+        }
+    },
+    {
+        "model": "roll.categorymaster",
+        "pk": 5,
+        "fields": {
+            "name": "Minority"
+        }
+    }
+]

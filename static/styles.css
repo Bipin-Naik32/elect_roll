@@ -85,3 +85,49 @@ button:hover {
     font-size: 14px;
     margin-top: 5px;
 }
+
+.option-card{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:18px;
+
+border:2px solid #d9d9d9;
+
+border-radius:12px;
+
+cursor:pointer;
+
+font-size:18px;
+
+font-weight:500;
+
+transition:.2s;
+
+background:white;
+
+}
+
+.option-card:hover{
+
+border-color:#0d6efd;
+
+background:#eef5ff;
+
+}
+
+.option-card input{
+
+transform:scale(1.4);
+
+}
+
+.option-card span{
+
+flex:1;
+
+}
